@@ -7,8 +7,8 @@ class Similator():
 
     def Similate(self): 
         for i in range(parameters.run_similation_days):
-            if i % 100 == 0:
-                print(f"{i / parameters.run_similation_days * 100}%")
+            if i % 500 == 0:
+                print(f"{i / parameters.run_similation_days * 100:.2f}%, {self.pop}")
             self.pop.update()
             self.reporter.record()
         self.reporter.show_stats()

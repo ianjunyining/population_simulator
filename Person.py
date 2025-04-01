@@ -8,7 +8,7 @@ class Person():
     def __init__(self, gender:Gender=None, privilege=None, health=None, age=None):
         self.gender = gender if gender else Gender.Boy if random.random() > 0.5 else Gender.Girl
         self.privilege = privilege if privilege else Util.RandFloat(0, 100)
-        self.age = age if age else int(Util.RandFloat(0, 365 * 100)) # in days
+        self.age = age if age else int(Util.RandFloat(0, params.days_in_year * 100)) # in days
         self.health = health if health else params.health_k_age * self.age + params.health_b_age # 0-100
         self.live = True
         self.married = False
@@ -25,7 +25,7 @@ class Person():
         self.privilege += Util.RandFloat(-0.1, 0.1)
 
     def __str__(self):
-        return f"gender: {self.gender}, age: {self.age / 365}, health: {self.health}"
+        return f"gender: {self.gender}, age: {self.age / params.days_in_year}, health: {self.health}"
 
 class Family():
     def __init__(self, husband:Person, wife:Person, max_num_of_children:int):
@@ -64,9 +64,21 @@ class Population():
         self.cached_nums_children_family = []
         self.cache_index = 0
 
+    def __str__(self):
+        return f"population: {self.number_of_people()}, life span: {self.average_life_span():.2f}, family: {len(self.families)}"
+    
     def inital_population(self, amount):
         for i in range(amount):
             self.people.append(Person())
+
+    def average_life_span(self):
+        total_dead = 0
+        total_age = 0
+        for person in self.people:
+            if person.live: continue
+            total_dead += 1
+            total_age += person.age
+        return total_age / max(total_dead, 1) / params.days_in_year
 
     def number_of_people(self):
         people_count = 0

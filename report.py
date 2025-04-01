@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt, numpy as np, Person
-
+import parameters as params
 
 class Stats():
     def __init__(self):
@@ -32,7 +32,7 @@ class Reporter():
         xPlots = []
         yPlots = []
         for i, stats in enumerate(self.stats_over_time):
-            xPlots.append(i / 365)
+            xPlots.append(i / params.days_in_year)
             yPlots.append(getattr(stats, field_name))
         ax.plot(xPlots, yPlots)
         ax.set_title(field_name)
@@ -59,9 +59,9 @@ class Reporter():
         num_children = [len(f.children) for f in self.population.families]
         max_children = [f.max_num_of_children for f in self.population.families]
         print(f"average number of children: {sum(num_children) / max(len(num_children), 1)}")
-        print(f"num_children: {num_children}")
+        # print(f"num_children: {num_children}")
         print(f"average max number of children: {sum(max_children) / max(len(max_children), 1)}")
-        print(f"max_children: {max_children}")
+        # print(f"max_children: {max_children}")
 
 
 
