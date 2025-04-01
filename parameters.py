@@ -1,4 +1,4 @@
-people_at_start = 2
+people_at_start = 100
 run_similation_days = 365 * 150
 health_k_low = -0.00000109589
 health_b_low = -0.01
@@ -18,6 +18,7 @@ prob_children_per_day = 1/365 # 1 / (max_children_gap - min_gap_bet_children)
 
 # family
 min_age_marry = 18 * 365
-marriage_rate = 1
-avg_num_children_family = 10
-max_num_children_family = 10
+marriage_rate = 0.4
+avg_num_children_family = 3.5
+min_num_children_family = 0
+max_num_children_family = 7

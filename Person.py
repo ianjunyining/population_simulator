@@ -61,6 +61,8 @@ class Population():
         self.inital_population(inital_population_amount)
         self.new_families_on_day = 0
         self.new_babies_on_day = 0
+        self.cached_nums_children_family = []
+        self.cache_index = 0
 
     def inital_population(self, amount):
         for i in range(amount):
@@ -90,6 +92,19 @@ class Population():
                 married += 1
         return married
     
+    def next_num_children_family(self):
+        if not self.cached_nums_children_family or self.cache_index >= len(self.cached_nums_children_family):
+            self.cached_nums_children_family = Util.generate_random_sequence(
+                self.number_of_people(),
+                params.min_num_children_family,
+                params.max_num_children_family,
+                params.avg_num_children_family,
+            )
+            self.cache_index = 0
+        ret = self.cached_nums_children_family[self.cache_index]
+        self.cache_index += 1
+        return ret
+        
     def create_families(self):
         married = self.number_of_married()
         expected_married = params.marriage_rate * self.number_of_people()
@@ -116,18 +131,12 @@ class Population():
             len(potential_marry_girls), 
             math.floor((expected_married - married) / 2),
         )
-        children_in_families = Util.generate_random_sequence(
-            self.new_families_on_day, 
-            1, 
-            params.max_num_children_family, 
-            params.avg_num_children_family,
-        )
 
         for i in range(self.new_families_on_day):
             family = Family(
                 husband=potential_marry_boys[i],
                 wife=potential_marry_girls[i],  
-                max_num_of_children=children_in_families[i],
+                max_num_of_children=self.next_num_children_family(),
             )
             family.index = len(self.families)
             self.families.append(family)
