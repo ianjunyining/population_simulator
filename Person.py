@@ -13,16 +13,16 @@ class Person():
         self.live = True
         self.married = False
 
-    def update(self): 
-        self.age += 1
+    def update(self, days:int): 
+        self.age += days
         self.health += Util.RandFloat(
             params.health_k_low * self.age + params.health_b_low, 
             params.health_k_up * self.age + params.health_b_up,
-        )
+        ) * days
         self.health = Util.Constrain(self.health, [0, 100])
         if self.health <= 0 or random.random() < params.sudden_death_rate: 
             self.live = False
-        self.privilege += Util.RandFloat(-0.1, 0.1)
+        #self.privilege += sum(Util.RandFloat(-0.1, 0.1) for _ in range(days))
 
     def __str__(self):
         return f"gender: {self.gender}, age: {self.age / params.days_in_year}, health: {self.health}"
@@ -49,7 +49,7 @@ class Family():
         if self.wife.health < params.min_health_give_birth_wife and \
             self.husband.health < params.min_health_give_birth_husband:
             return
-        if random.random() > params.prob_children_per_day:
+        if random.random() > params.prob_children_per_window:
             return
         self.children.append(Person(age=1))
         return self.children[-1]
@@ -156,7 +156,7 @@ class Population():
     def update(self):
         for person in self.people:
             if person.live:
-                person.update()
+                person.update(params.window_size_in_days)
 
         self.create_families()
 

@@ -32,7 +32,7 @@ class Reporter():
         xPlots = []
         yPlots = []
         for i, stats in enumerate(self.stats_over_time):
-            xPlots.append(i / params.days_in_year)
+            xPlots.append(i / params.days_in_year * params.window_size_in_days)
             yPlots.append(getattr(stats, field_name))
         ax.plot(xPlots, yPlots)
         ax.set_title(field_name)

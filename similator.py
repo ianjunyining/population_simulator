@@ -1,14 +1,16 @@
-import Person, parameters, report
+import Person, parameters as params, report, math
 
 class Similator():
     def __init__(self):
-        self.pop = Person.Population(parameters.people_at_start)
+        self.pop = Person.Population(params.people_at_start)
         self.reporter = report.Reporter(self.pop)
 
     def Similate(self): 
-        for i in range(parameters.run_similation_days):
-            if i % 500 == 0:
-                print(f"{i / parameters.run_similation_days * 100:.2f}%, {self.pop}")
+        iterations:int = math.floor(params.run_similation_days / params.window_size_in_days)
+        interval_print = 10 * params.days_in_year / params.window_size_in_days
+        for i in range(iterations):
+            if i % interval_print == 0:
+                print(f"{i / iterations * 100:.2f}%, {self.pop}")
             self.pop.update()
             self.reporter.record()
         self.reporter.show_stats()
