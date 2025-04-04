@@ -65,13 +65,22 @@ class Population():
         self.cache_index = 0
 
     def __str__(self):
-        return f"population: {self.number_of_people()}, life span: {self.average_life_span():.2f}, family: {len(self.families)}"
+        return f"population: {self.number_of_people()}, life span: {self.average_life_span():.2f}, family: {len(self.families)}, avg: {params.avg_num_children_family:.2f}"
     
     def inital_population(self, amount):
         for i in range(amount):
             self.people.append(Person())
 
-    def average_life_span(self):
+    def adjust_avg_num_children_per_family(self):
+        if not params.enable_negative_feedback: 
+            return
+        if self.number_of_people() > params.stable_population and \
+            params.avg_num_children_family - params.avg_num_children_delta > params.avg_num_children_lb:
+            params.avg_num_children_family -= params.avg_num_children_delta
+        elif params.avg_num_children_family + params.avg_num_children_delta < params.avg_num_children_ub:
+            params.avg_num_children_family += params.avg_num_children_delta
+
+    def average_life_span(self) -> float:
         total_dead = 0
         total_age = 0
         for person in self.people:
@@ -107,7 +116,7 @@ class Population():
     def next_num_children_family(self):
         if not self.cached_nums_children_family or self.cache_index >= len(self.cached_nums_children_family):
             self.cached_nums_children_family = Util.generate_random_sequence(
-                self.number_of_people(),
+                10,
                 params.min_num_children_family,
                 params.max_num_children_family,
                 params.avg_num_children_family,
@@ -166,3 +175,4 @@ class Population():
             if baby:
                 self.new_babies_on_day += 1
                 self.people.append(baby)
+        self.adjust_avg_num_children_per_family()

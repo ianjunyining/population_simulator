@@ -7,7 +7,7 @@ class Similator():
 
     def Similate(self): 
         iterations:int = math.floor(params.run_similation_days / params.window_size_in_days)
-        interval_print = 10 * params.days_in_year / params.window_size_in_days
+        interval_print = math.floor(10 * params.days_in_year / params.window_size_in_days)
         for i in range(iterations):
             if i % interval_print == 0:
                 print(f"{i / iterations * 100:.2f}%, {self.pop}")
